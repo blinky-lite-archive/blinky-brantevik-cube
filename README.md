@@ -1,1 +1,1 @@
-# blinky-wind-cube
+# blinky-brantevik-cube

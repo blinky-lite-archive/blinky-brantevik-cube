@@ -26,14 +26,15 @@ struct Radiopacket
   byte endByte = 25;
 };
 Radiopacket radiopacket;
-uint8_t sizeOfextraInfo = sizeof(radiopacket.extraInfo);
+uint8_t sizeOfRadioExtraInfo = sizeof(radiopacket.extraInfo);
 uint8_t sizeOfRadiopacket = sizeof(radiopacket);
 
 boolean pin9Value = false;
 boolean pin12Value = true;
 int modemConfigIndex = 1;
-float rfFreq = 433.800;
-byte transAddr = 25;
+int deviceType = 0;
+float deviceRfFreq[] = {433.300, 433.800};
+byte deviceTransAddr[] = {23,25};
 
 struct TransmitData
 {
@@ -42,7 +43,8 @@ struct TransmitData
   float temp = 0.0;
   float measuredvbat = 0.0;
   int   signalStrength = 0.0;
-  byte extraInfo[32];
+  int   deviceType = 0;
+  byte extraInfo[28];
 };
 struct ReceiveData
 {
@@ -66,9 +68,8 @@ void setupPins(TransmitData* tData, ReceiveData* rData)
   digitalWrite(RFM95_RST, HIGH);
   delay(10);
   rf95.init();
-  rf95.setFrequency(rfFreq);
+  rf95.setFrequency(deviceRfFreq[0]);
   rf95.setModemConfig(modeConfig[modemConfigIndex]); 
-
   rf95.setModeRx();
 //  Serial.begin(9600);
   delay(500);
@@ -82,16 +83,18 @@ boolean processData(TransmitData* tData, ReceiveData* rData)
   boolean waitForData = true;
   boolean timeOut = false;
   unsigned long lastWriteTime = millis();
+  rf95.setFrequency(deviceRfFreq[tData->deviceType]);
+  delay(1000);
   while (waitForData && !timeOut)
   {
     if (rf95.recv((uint8_t *)&radiopacket, &sizeOfRadiopacket))
     {
-      if ((transAddr == radiopacket.transAddr) && (transAddr == radiopacket.endByte))
+      if ((deviceTransAddr[tData->deviceType] == radiopacket.transAddr) && (deviceTransAddr[tData->deviceType] == radiopacket.endByte))
       {
         pin9Value = false;
-        if (radiopacket.extraInfo[sizeOfextraInfo - 2] == 1) pin9Value = true;
+        if (radiopacket.extraInfo[sizeOfRadioExtraInfo - 2] == 1) pin9Value = true;
         pin12Value = false;
-        if (radiopacket.extraInfo[sizeOfextraInfo - 1] == 1) pin12Value = true;
+        if (radiopacket.extraInfo[sizeOfRadioExtraInfo - 1] == 1) pin12Value = true;
         digitalWrite(9, pin9Value);
         digitalWrite(12, pin12Value);
         tData->windSpeed      = radiopacket.windSpeed;
@@ -99,8 +102,7 @@ boolean processData(TransmitData* tData, ReceiveData* rData)
         tData->temp           = radiopacket.temp;
         tData->measuredvbat   = radiopacket.measuredvbat;
         tData->signalStrength = rf95.lastRssi();
-
- /* 
+/*
         Serial.print(tData->windSpeed);
         Serial.print(',');
         Serial.print(tData->temp);
@@ -132,6 +134,8 @@ boolean processData(TransmitData* tData, ReceiveData* rData)
       digitalWrite(12, true);
     }
   }
+  tData->deviceType = tData->deviceType + 1;
+  if (tData->deviceType > 1) tData->deviceType = 0;
   return true;
 }
 
