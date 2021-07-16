@@ -1,0 +1,6 @@
+(sym_lib_table
+  (lib (name dmcginnis427)(type Legacy)(uri ${KIPRJMOD}/Library/dmcginnis427Symbols/dmcginnis427.lib)(options "")(descr "")(disabled))
+  (lib (name teensy)(type Legacy)(uri ${KIPRJMOD}/Library/Teensy/symbols/teensy.lib)(options "")(descr "")(disabled))
+  (lib (name FEATHER_M0_BASIC_PROTO)(type Legacy)(uri ${KIPRJMOD}/Library/FEATHER_M0_BASIC_PROTO/FEATHER_M0_BASIC_PROTO.lib)(options "")(descr ""))
+  (lib (name blinky-brantevik-rescue)(type Legacy)(uri ${KIPRJMOD}/blinky-brantevik-rescue.lib)(options "")(descr ""))
+)

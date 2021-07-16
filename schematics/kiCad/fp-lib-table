@@ -1,0 +1,5 @@
+(fp_lib_table
+  (lib (name TeensyFootprints)(type KiCad)(uri ${KIPRJMOD}/Library/Teensy/TeensyFootprints)(options "")(descr ""))
+  (lib (name dmcginnis427Footprints)(type KiCad)(uri ${KIPRJMOD}/Library/dmcginnis427Footprints)(options "")(descr ""))
+  (lib (name FEATHER_M0_BASIC_PROTO)(type KiCad)(uri ${KIPRJMOD}/Library/FEATHER_M0_BASIC_PROTO)(options "")(descr ""))
+)
