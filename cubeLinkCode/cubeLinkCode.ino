@@ -83,6 +83,8 @@ boolean processData(TransmitData* tData, ReceiveData* rData)
   boolean waitForData = true;
   boolean timeOut = false;
   unsigned long lastWriteTime = millis();
+  tData->deviceType = tData->deviceType + 1;
+  if (tData->deviceType > 1) tData->deviceType = 0;
   rf95.setFrequency(deviceRfFreq[tData->deviceType]);
   delay(1000);
   while (waitForData && !timeOut)
@@ -134,8 +136,6 @@ boolean processData(TransmitData* tData, ReceiveData* rData)
       digitalWrite(12, true);
     }
   }
-  tData->deviceType = tData->deviceType + 1;
-  if (tData->deviceType > 1) tData->deviceType = 0;
   return true;
 }
 
